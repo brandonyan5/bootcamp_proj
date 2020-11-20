@@ -38,11 +38,12 @@ app.post('/signup', (req, res) => {
     const username = req.body.username
     const password = req.body.password
     const storename = req.body.store
+    const storeaddress = req.body.address
     pool.getConnection(function (err, connection) {
         if (err) throw err;
         connection.query({
-                sql: 'INSERT INTO user (username, password, nameofstore) VALUES (?, ?, ?); SELECT LAST_INSERT_ID();',
-                values: [username, password, storename],
+                sql: 'INSERT INTO user (username, password, nameofstore, storeaddress) VALUES (?, ?, ?, ?); SELECT LAST_INSERT_ID();',
+                values: [username, password, storename, storeaddress],
             }, function (err, result) {
                 if (err) {
                     console.error(err)
@@ -107,7 +108,7 @@ app.post('/logout', (req, res) => {
  * post should create a post with the given body if the user is logged in
  */
 
-app.post('/post', (req, res) => {
+app.post('/add', (req, res) => {
     //const body = req.body.body
     pool.getConnection(function (err, connection) {
         if (err) throw err;
@@ -121,7 +122,7 @@ app.post('/post', (req, res) => {
                     return
                 }
                 // If we do not error, return to home
-                res.redirect('/post')
+                res.redirect('/dashboard')
             }
         )
     })
@@ -141,86 +142,17 @@ app.post('/subtract', (req, res) => {
                     return
                 }
                 // If we do not error, return to home
-                res.redirect('/post')
+                res.redirect('/dashboard')
             }
         )
     })
 })
 
-/**
- * comment should create a comment associated with the post with the given post_id and should contain the given body
- */
-app.post('/comment', (req, res) => {
-    const post_id = req.body.id
-    const body = req.body.body
+app.get('/dashboard', (req, res) => {
+if (req.session.uid != null)
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query({
-                sql: 'INSERT INTO comment (user_id, body, post_id) VALUES(?, ?, ?)',
-                values: [req.session.uid, body, post_id]
-            }, function (err, result) {
-                if (err) {
-                    console.error(err)
-                    res.send('An error has occurred')
-                    return
-                }
-                // If we do not error, return to home
-                res.redirect('/')
-            }
-        )
-    })
-})
-
-/**
- * this is our index route, here we should return a list of our posts and comments
- */
- /*
-app.get('/', (req, res) => {
-    pool.getConnection(function (err, connection) {
-        if (err) throw err;
-        connection.query({
-        // what does this table actually look like
-                sql: `SELECT post.*, user.username,
-                        (SELECT user.username FROM user WHERE user.id=comment.user_id) AS commenter,
-                         comment.body AS comment FROM post
-                         JOIN user ON user.id = post.user_id
-                         LEFT JOIN comment ON comment.post_id=post.id`,
-            }, function (err, result) {
-                if (err) {
-                    console.error(err)
-                    res.send('An error has occurred')
-                    return
-                }
-                // If we do not error, compile our comments and posts
-                const posts = {}
-                for (let i = 0; i < result.length; i++) {
-                    if (posts[result[i].id]) {
-                        posts[result[i].id].comments.push({commenter: result[i].commenter, comment: result[i].comment})
-                    } else {
-                        posts[result[i].id] = {
-                            id: result[i].id,
-                            body: result[i].body,
-                            username: result[i].username,
-                            comments: result[i].commenter ? [{
-                                commenter: result[i].commenter,
-                                comment: result[i].comment
-                            }] : []
-                        }
-                    }
-                }
-                res.locals = {
-                    data: posts
-                }
-                res.render('index')
-            }
-        )
-    })
-})*/
-
-app.get('/post', (req, res) => {
-    pool.getConnection(function (err, connection) {
-        if (err) throw err;
-        connection.query({
+            connection.query({
 
                 sql: `SELECT * FROM user WHERE user.id=?`,
                 values: [req.session.uid],
@@ -233,21 +165,21 @@ app.get('/post', (req, res) => {
                 // If we do not error, compile our comments and posts
                 const shops = {}
                 for (let i = 0; i < result.length; i++) {
+                    shops[result[i].id] = {
+                    count: result[i].count
 
-                        shops[result[i].id] = {
-
-                            username: result[i].count
-
-                        }
+                    }
 
                 }
                 res.locals = {
                     data: shops
                 }
-                res.render('post')
+                res.render('dashboard')
             }
         )
     })
+// change this to render the default page for non-logged in user/employee
+else res.render('index')
 })
 
 app.get('/login', (req, res) => {
