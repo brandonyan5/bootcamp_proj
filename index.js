@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-// set up our database
+// set up the database
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
@@ -18,22 +18,19 @@ const pool = mysql.createPool({
     multipleStatements: true
 })
 
-// set up our templating engine
+// set up templating engine
 app.set('view engine', 'html');
 app.engine('html', require('hbs').__express);
 app.use(express.static(__dirname + '/public'));
 
-// set up our session
+// set up the session
 app.use(session({
     secret: 'keyboard cat',
     cookie: {}
 }))
 
-/**
- * signup should create a new user with the given username and password, log the user in, and redirect the user to
- * the home page
- * (in a real application, we would not store a password in plain text, but it is okay to do so here)
- */
+//get info from the store, and sign them up
+//then go to login page
 app.post('/signup', (req, res) => {
     const username = req.body.username
     const password = req.body.password
@@ -50,17 +47,15 @@ app.post('/signup', (req, res) => {
                     res.send('Could not create account')
                     return
                 }
-                // If we do not error, we have created the account, lets set our session user id and return to home
+                //created account, set session uid and go to login page
                 req.session.uid = result[1][0]['LAST_INSERT_ID()']
-                res.redirect('/')
+                res.redirect('/login')
             }
         )
     })
 })
 
-/**
- * login should log the user in to an account, if one exists, and redirect the user to the home page
- */
+//login the store if account is already there, then redirect to dashboard
 app.post('/login', (req, res) => {
     const username = req.body.username
     const password = req.body.password
@@ -77,14 +72,15 @@ app.post('/login', (req, res) => {
                     res.send('Either user does not exist or username password combination is invalid')
                     return
                 }
-                // If we do not error, we have found the account, lets set our session user id and redirect to home
+                //account is found, get session uid and redirect to dashboard
                 req.session.uid = result[0]['id']
-                res.redirect('/')
+                res.redirect('/dashboard')
             }
         )
     })
 })
 
+//logout for the store
 app.post('/logout', (req, res) => {
     pool.getConnection(function (err, connection) {
         if (err) throw err;
@@ -104,12 +100,9 @@ app.post('/logout', (req, res) => {
     })
 })
 
-/**
- * post should create a post with the given body if the user is logged in
- */
-
+//hit plus button when a person enters the store
 app.post('/add', (req, res) => {
-    //const body = req.body.body
+
     pool.getConnection(function (err, connection) {
         if (err) throw err;
         connection.query({
@@ -121,13 +114,14 @@ app.post('/add', (req, res) => {
                     res.send('An error has occurred')
                     return
                 }
-                // If we do not error, return to home
+
                 res.redirect('/dashboard')
             }
         )
     })
 })
 
+//hit minus button when a person leaves the store
 app.post('/subtract', (req, res) => {
     //const body = req.body.body
     pool.getConnection(function (err, connection) {
@@ -141,13 +135,14 @@ app.post('/subtract', (req, res) => {
                     res.send('An error has occurred')
                     return
                 }
-                // If we do not error, return to home
+                // If no error, redirect to store dashboard so the number updates
                 res.redirect('/dashboard')
             }
         )
     })
 })
 
+//dashboard for the store
 app.get('/dashboard', (req, res) => {
 if (req.session.uid != null)
     pool.getConnection(function (err, connection) {
@@ -162,7 +157,7 @@ if (req.session.uid != null)
                     res.send('An error has occurred')
                     return
                 }
-                // If we do not error, compile our comments and posts
+                // If no error, get count of the store
                 const shops = {}
                 for (let i = 0; i < result.length; i++) {
                     shops[result[i].id] = {
@@ -178,7 +173,7 @@ if (req.session.uid != null)
             }
         )
     })
-// change this to render the default page for non-logged in user/employee
+// change this to render the default dashboard for a user
 else res.render('index')
 })
 
@@ -197,3 +192,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
+
