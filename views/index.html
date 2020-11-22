@@ -14,36 +14,22 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-link active" href="/">Home</a>
-                <a class="nav-link" href="signup">Signup</a>
-                <a class="nav-link" href="login">Login/Logout</a>
-                <a class="nav-link" href="dashboard">Dashboard</a>
+                <a class="nav-link" href="map">Store Search</a>
             </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="nav-link" href="dashboard">Dashboard</a></li>
+                <li><a class="nav-link" href="signup">Signup</a></li>
+                <li><a class="nav-link" href="login">Login/Logout</a></li>
+            </ul>
         </div>
     </nav>
 </header>
-<div class="padded">
-    {{#each data}}
-    <div class="card mb-3">
-        <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">{{username}}</h6>
-            <p class="card-text">{{body}}</p>
-            <form class="form-inline" style="margin-bottom: 0px" method="post" action="/comment">
-                <div class="form-group mb-2">
-                    <input type="hidden" name="id" value="{{id}}">
-                    <input type="text" class="form-control" id="body" name="body" placeholder="Comment...">
-                </div>
-                <button type="submit" class="btn btn-primary mx-sm-3 mb-2">Post</button>
-            </form>
-        </div>
-        {{#each comments}}
-        <div class="card-footer">
-            <h6 class="card-subtitle mb-2 text-muted">{{commenter}}</h6>
-            <p class="card-text">{{comment}}</p>
-        </div>
-        {{/each}}
-
-    </div>
-    {{/each}}
+<div class="center">
+    <h1>Welcome!</h1>
+    <h4>Don't wait in line, and avoid crowded stores. Find out how crowded stores near you are.</h4>
+    <a class="btn btn-primary" href="signup">Store Sign up</a>
+    <a class="btn btn-primary" href="login">Store Log in</a>
+    <a class="btn btn-primary" href="map">All Customers Click Here</a>
 </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

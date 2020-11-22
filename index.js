@@ -224,7 +224,7 @@ if (req.session.uid != null){
         connection.release();
     })
 // change this to render the default dashboard for a user
-}else{ res.render('index'); console.log("dashboard fail");}
+}else{ res.render('index'); res.redirect('/'); console.log("dashboard fail");}
 })
 
 app.get('/login', (req, res) => {
@@ -237,6 +237,10 @@ app.get('/signup', (req, res) => {
 
 app.get('/', (req, res) => {
     res.render('index')
+})
+
+app.get('/map', (req, res) => {
+    res.render('map')
 })
 
 app.listen(port, () => {
