@@ -1,7 +1,7 @@
 const express = require('express')
 const session = require('express-session')
 const app = express()
-const port = 3000
+const port = 8000
 const mysql = require('mysql')
 const bodyParser = require('body-parser')
 
@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'Argyl9823Hwrd999#',
+    password: 'password',
     database: 'bootcamp',
     multipleStatements: true
 })
