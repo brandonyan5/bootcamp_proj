@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'password',
+    password: 'Argyl9823Hwrd999#',
     database: 'bootcamp',
     multipleStatements: true
 })
@@ -39,7 +39,7 @@ app.post('/signup', (req, res) => {
     pool.getConnection(function (err, connection) {
         if (err) throw err;
         connection.query({
-                sql: 'INSERT INTO user (username, password, nameofstore, storeaddress) VALUES (?, ?, ?, ?); SELECT LAST_INSERT_ID();',
+                sql: 'INSERT INTO user (username, password, nameofstore, storeaddress, storelat, storelong) VALUES (?, ?, ?, ?); SELECT LAST_INSERT_ID();',
                 values: [username, password, storename, storeaddress],
             }, function (err, result) {
                 if (err) {
@@ -52,6 +52,7 @@ app.post('/signup', (req, res) => {
                 res.redirect('/login')
             }
         )
+        connection.release();
     })
 })
 
@@ -77,11 +78,13 @@ app.post('/login', (req, res) => {
                 res.redirect('/dashboard')
             }
         )
+        connection.release();
     })
 })
 
 //logout for the store
 app.post('/logout', (req, res) => {
+    console.log(req.session);
     pool.getConnection(function (err, connection) {
         if (err) throw err;
         connection.query({
@@ -97,14 +100,16 @@ app.post('/logout', (req, res) => {
                 res.redirect('/')
             }
         )
+        connection.release();
     })
-})
+});
 
 //hit plus button when a person enters the store
 app.post('/add', (req, res) => {
-
+    console.log(req.session);
     pool.getConnection(function (err, connection) {
-        if (err) throw err;
+        if (err){ throw err; console.log("add fail");};
+         console.log("add success");
         connection.query({
                 sql: 'UPDATE user SET count = count + 1 WHERE id = ?',
                 values: [req.session.uid],
@@ -114,18 +119,20 @@ app.post('/add', (req, res) => {
                     res.send('An error has occurred')
                     return
                 }
-
                 res.redirect('/dashboard')
             }
         )
+        connection.release();
     })
 })
 
 //hit minus button when a person leaves the store
 app.post('/subtract', (req, res) => {
     //const body = req.body.body
+    console.log(req.session);
     pool.getConnection(function (err, connection) {
-        if (err) throw err;
+        if (err){ throw err; console.log("subtract fail");};
+         console.log("subtract success");
         connection.query({
                 sql: 'UPDATE user SET count = count - 1 WHERE id = ?',
                 values: [req.session.uid],
@@ -139,12 +146,36 @@ app.post('/subtract', (req, res) => {
                 res.redirect('/dashboard')
             }
         )
+        connection.release();
+    })
+})
+
+//direct input endpoint for when there is a large change in number of users
+app.post('/update', (req, res) => {
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+        connection.query({
+                sql: 'UPDATE user SET count = count - 1 WHERE id = ?',
+                values: [req.body.newPeople, req.session.uid],
+            }, function (err, result) {
+                if (err) {
+                    console.error(err)
+                    res.send('An error has occurred')
+                    return
+                }
+                // If no error, redirect to store dashboard so the number updates
+                res.redirect('/dashboard')
+            }
+        )
+        connection.release();
     })
 })
 
 //dashboard for the store
 app.get('/dashboard', (req, res) => {
-if (req.session.uid != null)
+  console.log(req.session);
+if (req.session.uid != null){
+  console.log("dashboard success");
     pool.getConnection(function (err, connection) {
         if (err) throw err;
             connection.query({
@@ -172,9 +203,10 @@ if (req.session.uid != null)
                 res.render('dashboard')
             }
         )
+        connection.release();
     })
 // change this to render the default dashboard for a user
-else res.render('index')
+}else{ res.render('index'); console.log("dashboard fail");}
 })
 
 app.get('/login', (req, res) => {
@@ -192,4 +224,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
-
