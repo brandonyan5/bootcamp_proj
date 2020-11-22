@@ -4,7 +4,6 @@ const app = express()
 const port = 3000
 const mysql = require('mysql')
 const bodyParser = require('body-parser')
-const fetchInject = require('fetch-inject')
 const https = require('https');
 const email = "youremail@gmail.com";
 
