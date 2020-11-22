@@ -190,6 +190,10 @@ app.get('/signup', (req, res) => {
     res.render('signup')
 })
 
+app.get('/map', (req, res) => {
+    res.render('map')
+})
+
 app.get('/', (req, res) => {
     res.render('index')
 })

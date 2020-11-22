@@ -1,6 +1,44 @@
 .padded {
     padding: 20px 10%;
 }
+.center {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+  text-align: center;
+}
 .post {
     border: 1px solid black
+}
+#searchbar {
+	width: 100%;
+	padding-right: 40px;
+}
+#myUL {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#myUL li a {
+  border: 1px solid #ddd;
+  margin-top: -1px; 
+  background-color: #f6f6f6; 
+  padding: 12px;
+  text-decoration: none; 
+  font-size: 18px;
+  color: black;
+  display: block; 
+}
+
+#myUL li a:hover:not(.header) {
+  background-color: #eee;
+}
+
+.navbar-right {
+	float: right;
+}
+
+h4 {
+  padding: 25px 25px;
 }
