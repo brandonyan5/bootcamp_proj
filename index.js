@@ -150,7 +150,6 @@ app.post('/subtract', (req, res) => {
     })
 })
 
-
 //direct input endpoint for when there is a large change in number of users
 app.post('/update', (req, res) => {
     pool.getConnection(function (err, connection) {
@@ -171,6 +170,7 @@ app.post('/update', (req, res) => {
         connection.release();
     })
 })
+
 //dashboard for the store
 app.get('/dashboard', (req, res) => {
   console.log(req.session);
@@ -193,7 +193,9 @@ if (req.session.uid != null){
                 for (let i = 0; i < result.length; i++) {
                     shops[result[i].id] = {
                     count: result[i].count
+
                     }
+
                 }
                 res.locals = {
                     data: shops
@@ -204,9 +206,8 @@ if (req.session.uid != null){
         connection.release();
     })
 // change this to render the default dashboard for a user
-} else{ res.render('index'); res.redirect('/'); console.log("dashboard fail");}
-}
-)
+}else{ res.render('index'); res.redirect('/'); console.log("dashboard fail");}
+})
 
 app.get('/login', (req, res) => {
     res.render('login')
