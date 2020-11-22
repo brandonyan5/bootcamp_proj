@@ -23,3 +23,7 @@ ALTER TABLE user ADD count INTEGER NOT NULL;
 ALTER TABLE user ALTER count SET DEFAULT 0;
 
 ALTER TABLE user ADD storeaddress varchar(255) NOT NULL;
+
+ALTER TABLE user ADD storelat double NOT NULL;
+
+ALTER TABLE user ADD storelong double NOT NULL;
