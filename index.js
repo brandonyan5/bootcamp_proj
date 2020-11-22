@@ -31,6 +31,22 @@ app.use(session({
     cookie: {}
 }))
 
+//set up a function for calculating distance given lat and long
+function latLongDist(lat1, lon1, lat2, lon2) {
+  const R = 6371e3; // metres
+  const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+  const φ2 = lat2 * Math.PI/180;
+  const Δφ = (lat2-lat1) * Math.PI/180;
+  const Δλ = (lon2-lon1) * Math.PI/180;
+
+  const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+  return R * c; // in metres
+}
+
 //get info from the store, and sign them up
 //then go to login page
 app.post('/signup', (req, res) => {
@@ -224,6 +240,44 @@ if (req.session.uid != null){
     })
 // change this to render the default dashboard for a user
 }else{ res.render('index'); res.redirect('/'); console.log("dashboard fail");}
+})
+
+//grab search results for partial string search (or full string search)
+app.post('/map', (req, res) => {
+    const inp = req.body.search;
+    const currLat = req.body.currLat;
+    const currLong = req.body.currLong;
+    console.log(inp, currLat, currLong);
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+        connection.query({
+                sql: 'SELECT * FROM user WHERE nameofstore LIKE ?',
+                values: [inp + "%"],
+            }, function (err, result) {
+                if (err) {
+                    console.error(err)
+                    res.send('An error has occurred')
+                    return
+                }
+                const shops = {}
+                for (var i = 0; i < result.length; i++) {
+                    if (latLongDist(currLat, currLong, result[i].storelat, result[i].storelong) <= 30000) {
+                      console.log(result[i]);
+                      shops[result[i].id] = {
+                        nameofstore: result[i].nameofstore,
+                        storeaddress: result[i].storeaddress,
+                        count: result[i].count
+                      }
+                    }
+                }
+                res.locals = {
+                    data: shops
+                }
+                res.render('map')
+            }
+        )
+        connection.release();
+    })
 })
 
 app.get('/login', (req, res) => {

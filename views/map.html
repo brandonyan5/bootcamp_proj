@@ -37,14 +37,26 @@
     </nav>
 </header>
 <div class="padded center">
-    <form method="post" action="/">
+    <form method="post" action="/map">
         <button type="submit" class="btn btn-primary" style="float: right">Search</button>
         <div style="overflow: hidden; padding-right: .5em;">
-            <input type="text" class="form-control" id="searchbar" name="search">
+            <input type="text" class="form-control" id="searchbar" name="search" value="">
+            <input type="hidden" name="currLat" value=0>
+            <input type="hidden" name="currLong" value=0>
         </div>
     </form>
-    <ul id="myUL"> 
-        Various search results....
+    <ul id="myUL">
+      {{#each data}}
+      <li>
+        <div class="padded">
+          <div class="card mb-3">
+              <div class="card-body">
+                  <h1 class="card-title mb-2 text-muted">{{nameofstore}}, {{storeaddress}}, {{count}}</h1>
+              </div>
+          </div>
+        </div>
+      </li>
+      {{/each}}
     </ul>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
