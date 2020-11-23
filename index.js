@@ -4,6 +4,9 @@ const app = express()
 const port = 8000
 const mysql = require('mysql')
 const bodyParser = require('body-parser')
+const fetchInject = require('fetch-inject')
+const https = require('https');
+const email = "youremail@gmail.com";
 
 // set up body parsing
 app.use(bodyParser.urlencoded({extended: false}))
@@ -16,7 +19,7 @@ const pool = mysql.createPool({
     password: 'password',
     database: 'bootcamp',
     multipleStatements: true
-})
+});
 
 // set up templating engine
 app.set('view engine', 'html');
@@ -38,20 +41,34 @@ app.post('/signup', (req, res) => {
     const storeaddress = req.body.address
     pool.getConnection(function (err, connection) {
         if (err) throw err;
-        connection.query({
-                sql: 'INSERT INTO user (username, password, nameofstore, storeaddress, storelat, storelong) VALUES (?, ?, ?, ?); SELECT LAST_INSERT_ID();',
-                values: [username, password, storename, storeaddress],
-            }, function (err, result) {
-                if (err) {
-                    console.error(err)
-                    res.send('Could not create account')
-                    return
+        https.get('https://nominatim.openstreetmap.org/search?email='+email+'&format=json&q='+storeaddress, (resp) => {
+          let data = '';
+          resp.on('data', (chunk) => {
+            data += chunk;
+          });
+          resp.on('end', () => {
+            const parsed = JSON.parse(data);
+            console.log(parsed[0].lat, parsed[0].lon);
+            var lat = parsed[0].lat;
+            var long = parsed[0].lon;
+            connection.query({
+                    sql: 'INSERT INTO user (username, password, nameofstore, storeaddress, storelat, storelong) VALUES (?, ?, ?, ?, ?, ?); SELECT LAST_INSERT_ID();',
+                    values: [username, password, storename, storeaddress, lat, long],
+                }, function (err, result) {
+                    if (err) {
+                        console.error(err)
+                        res.send('Could not create account')
+                        return
+                    }
+                    //created account, set session uid and go to login page
+                    req.session.uid = result[1][0]['LAST_INSERT_ID()']
+                    res.redirect('/login')
                 }
-                //created account, set session uid and go to login page
-                req.session.uid = result[1][0]['LAST_INSERT_ID()']
-                res.redirect('/login')
-            }
-        )
+            )
+          });
+        }).on("error", (err) => {
+          console.log("Error: " + err.message);
+        });
         connection.release();
     })
 })
@@ -152,10 +169,11 @@ app.post('/subtract', (req, res) => {
 
 //direct input endpoint for when there is a large change in number of users
 app.post('/update', (req, res) => {
+    const newPeople = req.body.newPeople
     pool.getConnection(function (err, connection) {
         if (err) throw err;
         connection.query({
-                sql: 'UPDATE user SET count = count - 1 WHERE id = ?',
+                sql: 'UPDATE user SET count = ? WHERE id = ?',
                 values: [req.body.newPeople, req.session.uid],
             }, function (err, result) {
                 if (err) {
