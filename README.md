@@ -27,6 +27,9 @@ ALTER TABLE user ADD storeaddress varchar(255) NOT NULL;
 ALTER TABLE user ADD storelat double NOT NULL;
 
 ALTER TABLE user ADD storelong double NOT NULL;
+
 CREATE TABLE soldout (id INTEGER PRIMARY KEY AUTO_INCREMENT);
+
 ALTER TABLE soldout ADD item text NOT NULL;
+
 ALTER TABLE soldout ADD store_id INTEGER NOT NULL;
