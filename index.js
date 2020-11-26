@@ -261,6 +261,7 @@ app.post('/map', (req, res) => {
                 }
                 const shops = {}
                 for (var i = 0; i < result.length; i++) {
+                    console.log(latLongDist(currLat, currLong, result[i].storelat, result[i].storelong))
                     if (latLongDist(currLat, currLong, result[i].storelat, result[i].storelong) <= 30000) {
                       console.log(result[i]);
                       shops[result[i].id] = {
