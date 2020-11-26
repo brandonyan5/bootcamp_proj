@@ -34,14 +34,15 @@
         <button type="submit" class="btn btn-primary">-</button>
     </form>
 </div>
-{{#each data}}
-<div class="padded center">
 
+<div class="padded center">
+    {{#each data2}}
     <div class="card mb-3">
         <div class="card-body">
             <h1 class="card-title mb-2 text-muted">{{count}} people</h1>
         </div>
     </div>
+    {{/each}}
     <form method="post" action="/soldout">
         <div class="form-group row">
             <label for="soldout" class="col-sm-2 col-form-label">Enter Sold-Out Item</label>
@@ -51,6 +52,22 @@
         </div>
         <button type="submit" class="btn btn-primary">Add to Sold-Out List</button>
     </form>
+    {{#each data}}
+    <ul id="myUL">
+        <li>
+            <div class="padded">
+                <form method="post" action="/deleteitem">
+                    <button type="submit" class="btn btn-primary">Delete Item</button>
+                    <input type="hidden" name="deleteitem" value="{{item}}">
+                </form>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h3 class="card-title mb-2 text-muted">{{item}}</h3>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
 
 </div>
 {{/each}}

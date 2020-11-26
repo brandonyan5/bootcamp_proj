@@ -160,7 +160,7 @@ app.post('/add', (req, res) => {
 
 //hit minus button when a person leaves the store
 app.post('/subtract', (req, res) => {
-    //const body = req.body.body
+
     console.log(req.session);
     pool.getConnection(function (err, connection) {
         if (err){ throw err; console.log("subtract fail");};
@@ -206,15 +206,15 @@ app.post('/update', (req, res) => {
 
 //dashboard for the store
 app.get('/dashboard', (req, res) => {
+
   console.log(req.session);
 if (req.session.uid != null){
   console.log("dashboard success");
     pool.getConnection(function (err, connection) {
         if (err) throw err;
             connection.query({
-
-                sql: `SELECT * FROM user WHERE user.id=?`,
-                values: [req.session.uid],
+                sql: `SELECT * FROM user INNER JOIN soldout ON soldout.store_id = ? AND user.id = ?`,
+                values: [req.session.uid, req.session.uid],
             }, function (err, result) {
                 if (err) {
                     console.error(err)
@@ -224,16 +224,23 @@ if (req.session.uid != null){
                 // If no error, get count of the store
                 const shops = {}
                 for (let i = 0; i < result.length; i++) {
-                    shops[result[i].id] = {
-                    count: result[i].count
+                        shops[result[i].id] = {
+                            item: result[i].item
 
-                    }
-
+                        }
                 }
+                const shops2 = {}
+                 shops2[result[1].id] = {
+                 count: result[1].count
+
+                 }
                 res.locals = {
-                    data: shops
+                    data: shops,
+                    data2: shops2
+
                 }
                 res.render('dashboard')
+
             }
         )
         connection.release();
@@ -338,6 +345,29 @@ app.post('/moreinfo', (req, res) => {
         connection.release();
     })
 
+})
+
+app.post('/deleteitem', (req, res) => {
+   const itemToDelete = req.body.deleteitem
+    console.log(itemToDelete);
+    pool.getConnection(function (err, connection) {
+        if (err){ throw err; console.log("delete item fail");};
+         console.log("delete item success");
+        connection.query({
+                sql: `DELETE FROM soldout WHERE store_id = ? AND item = ?`,
+                values: [req.session.uid, itemToDelete],
+            }, function (err, result) {
+                if (err) {
+                    console.error(err)
+                    res.send('An error has occurred')
+                    return
+                }
+                // If no error, redirect to store dashboard so the number updates
+                res.redirect('/dashboard')
+            }
+        )
+        connection.release();
+    })
 })
 
 app.get('/login', (req, res) => {

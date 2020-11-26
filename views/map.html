@@ -41,9 +41,12 @@
     <form method="post" action="/map">
         <button type="submit" class="btn btn-primary" style="float: right">Search</button>
         <div style="overflow: hidden; padding-right: .5em;">
-            <input type="text" class="form-control" id="searchbar" name="search" value="">
-            <input type="hidden" name="currLat" id="currLat" value="" />
-            <input type="hidden" name="currLong" id="currLong" value="" />
+
+            <input type="text" class="form-control" id="searchbar"
+                   placeholder="Search for a Store, or Leave Blank to See All Stores Near You!" name="search" value="">
+            <input type="hidden" name="currLat" id="currLat" value=""/>
+            <input type="hidden" name="currLong" id="currLong" value=""/>
+
         </div>
     </form>
     <ul id="myUL">
@@ -51,10 +54,10 @@
         <li>
             <div class="padded">
                 <div class="align-self-end">
-                <form method="post" action="/moreinfo">
-                    <button type="submit" class="btn btn-primary" style="float: right;">See More</button>
-                    <div class="pull-right"> <input type="hidden" name="storeid" value={{storeid}}> </div>
-                </form>
+                    <form method="post" action="/moreinfo">
+                        <button type="submit" class="btn btn-primary" style="float: right;">See More</button>
+                        <div class="pull-right"><input type="hidden" name="storeid" value={{storeid}}></div>
+                    </form>
                 </div>
                 <div class="card mb-3">
                     <div class="card-body">
