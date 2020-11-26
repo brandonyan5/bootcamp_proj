@@ -28,6 +28,7 @@
 
 
 
+
     </script>
 </head>
 <body>
@@ -54,7 +55,8 @@
     <form method="post" action="/map">
         <button type="submit" class="btn btn-primary" style="float: right">Search</button>
         <div style="overflow: hidden; padding-right: .5em;">
-            <input type="text" class="form-control" id="searchbar" name="search" value="">
+            <input type="text" class="form-control" id="searchbar"
+                   placeholder="Search for a Store, or Leave Blank to See All Stores Near You!" name="search" value="">
             <input type="hidden" name="currLat" value=42.7>
             <input type="hidden" name="currLong" value=-71.5>
         </div>
