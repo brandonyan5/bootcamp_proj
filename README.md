@@ -49,7 +49,9 @@ ALTER TABLE soldout ADD store_id INTEGER NOT NULL;
 
 ### Last Steps
 cd into the correct folder where the project is
+
 Run npm start in the Terminal
+
 Go to localhost:8000 on your browser and see the app!
 
 #### Contributors
