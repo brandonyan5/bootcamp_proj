@@ -1,4 +1,9 @@
-##Setting up the MySQL database
+## Structure of Repo
+Main code for the backend, which handles the requests and interacting with the MySQL database, is located in index.js
+Code for front end HTML and user inferface is located in the views folder.
+Code for CSS is located in public/css folder
+
+## Setting up the MySQL database
 
 Download and install MySQL (brew install mysql) for Mac
 
