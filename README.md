@@ -9,6 +9,8 @@ Code for front end and user inferface is located in the views folder. These file
 Code for CSS is located in public/css folder
 
 ## Setup/Getting Started
+Install yarn and npm
+
 ### Setting up the MySQL database
 
 Download and install MySQL (brew install mysql) for Mac
@@ -44,6 +46,11 @@ CREATE TABLE soldout (id INTEGER PRIMARY KEY AUTO_INCREMENT);
 ALTER TABLE soldout ADD item text NOT NULL;
 
 ALTER TABLE soldout ADD store_id INTEGER NOT NULL;
+
+### Last Steps
+cd into the correct folder where the project is
+Run npm start in the Terminal
+Go to localhost:8000 on your browser and see the app!
 
 #### Contributors
 Brandon Yan: Worked on the store dashboard and connecting that to the database. This is where store owners can update the count, and add to, or remove from, a list of their sold-out items. Also added the feature where customers can view sold-out items from the store search page.
