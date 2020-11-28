@@ -1,9 +1,10 @@
 ## Structure of Repo
 Main code for the backend, which handles the requests and interacting with the MySQL database, is located in index.js
-Code for front end HTML and user inferface is located in the views folder.
+Code for front end and user inferface is located in the views folder. This files interact with the index.js file
 Code for CSS is located in public/css folder
 
-## Setting up the MySQL database
+## Setup/Getting Started
+### Setting up the MySQL database
 
 Download and install MySQL (brew install mysql) for Mac
 
@@ -38,3 +39,6 @@ CREATE TABLE soldout (id INTEGER PRIMARY KEY AUTO_INCREMENT);
 ALTER TABLE soldout ADD item text NOT NULL;
 
 ALTER TABLE soldout ADD store_id INTEGER NOT NULL;
+
+#### Contributors
+Brandon Yan: Worked on the store dashboard and connecting that to the database. This is where store owners can update the count, and add to, or remove from, a list of sold-out items. Also added the feature where customers can view sold-out items from the store search page.
