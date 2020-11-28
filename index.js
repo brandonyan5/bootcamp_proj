@@ -49,6 +49,7 @@ function latLongDist(lat1, lon1, lat2, lon2) {
 
 //get info from the store, and sign them up
 //then go to login page
+//converts store address to coordinates
 app.post('/signup', (req, res) => {
     const username = req.body.username
     const password = req.body.password
@@ -98,11 +99,10 @@ app.post('/login', (req, res) => {
                 sql: 'SELECT * FROM user WHERE user.username=? AND user.password=?;',
                 values: [username, password],
 
-
             }, function (err, result) {
                 if (err || !result[0]) {
                     console.error(err)
-                    res.send('Either user does not exist or username password combination is invalid')
+                    res.send('username and password combo is wrong, or user does not exist')
                     return
                 }
                 //account is found, get session uid and redirect to dashboard
@@ -115,6 +115,7 @@ app.post('/login', (req, res) => {
 })
 
 //logout for the store
+//sets req.session.uid to null after log out
 app.post('/logout', (req, res) => {
     console.log(req.session);
     pool.getConnection(function (err, connection) {
@@ -137,6 +138,7 @@ app.post('/logout', (req, res) => {
 });
 
 //hit plus button when a person enters the store
+//adds 1 to the count in the table
 app.post('/add', (req, res) => {
     console.log(req.session);
     pool.getConnection(function (err, connection) {
@@ -159,6 +161,7 @@ app.post('/add', (req, res) => {
 })
 
 //hit minus button when a person leaves the store
+//subtracts 1 from the count
 app.post('/subtract', (req, res) => {
 
     console.log(req.session);
@@ -183,6 +186,7 @@ app.post('/subtract', (req, res) => {
 })
 
 //direct input endpoint for when there is a large change in number of users
+//not being used currently
 app.post('/update', (req, res) => {
     const newPeople = req.body.newPeople
     pool.getConnection(function (err, connection) {
@@ -205,8 +209,9 @@ app.post('/update', (req, res) => {
 })
 
 //dashboard for the store
+//uses inner join to only show the soldout item for that particular store
+//and shows the count for that store
 app.get('/dashboard', (req, res) => {
-
   console.log(req.session);
 if (req.session.uid != null){
   console.log("dashboard success");
@@ -245,11 +250,12 @@ if (req.session.uid != null){
         )
         connection.release();
     })
-// change this to render the default dashboard for a user
+//redirects to home page because no store is logged in
 }else{ res.render('index'); res.redirect('/'); console.log("dashboard fail");}
 })
 
 //grab search results for partial string search (or full string search)
+//select the stores within 20 miles of user location using math
 app.post('/map', (req, res) => {
     const inp = req.body.search;
     const currLat = req.body.currLat;
@@ -289,6 +295,8 @@ app.post('/map', (req, res) => {
     })
 })
 
+//record user input from req.body
+//then insert the item into the soldout table
 app.post('/soldout', (req, res) => {
     const sold_out = req.body.soldout
     console.log(req.session);
@@ -311,6 +319,8 @@ app.post('/soldout', (req, res) => {
     })
 })
 
+//get correct entry from soldout table
+//display the items on the screen
 app.post('/moreinfo', (req, res) => {
   const id = req.body.storeid;
   console.log(req.session);
@@ -328,6 +338,7 @@ app.post('/moreinfo', (req, res) => {
                     return
                 }
 
+                //name data to reference in the html file
                 const shops = {}
                 for (let i = 0; i < result.length; i++) {
                     shops[result[i].id] = {
@@ -342,11 +353,14 @@ app.post('/moreinfo', (req, res) => {
                 res.render('more_info')
             }
         )
+        //prevents pages not loading after a few requests
         connection.release();
     })
 
 })
 
+//get the item to delete from req.body
+//then delete corresponding entry from the soldout table
 app.post('/deleteitem', (req, res) => {
    const itemToDelete = req.body.deleteitem
     console.log(itemToDelete);
@@ -362,7 +376,7 @@ app.post('/deleteitem', (req, res) => {
                     res.send('An error has occurred')
                     return
                 }
-                // If no error, redirect to store dashboard so the number updates
+                // If no error, redirect to store dashboard so the soldout list updates
                 res.redirect('/dashboard')
             }
         )
@@ -370,6 +384,7 @@ app.post('/deleteitem', (req, res) => {
     })
 })
 
+//rendering corresponding pages
 app.get('/login', (req, res) => {
     res.render('login')
 })
