@@ -44,3 +44,4 @@ ALTER TABLE soldout ADD store_id INTEGER NOT NULL;
 
 #### Contributors
 Brandon Yan: Worked on the store dashboard and connecting that to the database. This is where store owners can update the count, and add to, or remove from, a list of sold-out items. Also added the feature where customers can view sold-out items from the store search page.
+William Sun: Worked on the backend geolocation, adding lat and long to the SQL table, identifying where the stores' addresses were in latitude and longitude and grabbing stores within 30km based on lat and long values. Also added code to autofill a valid address in the signup page (although it currently does not work due to us not setting up a Google Cloud billing account).
