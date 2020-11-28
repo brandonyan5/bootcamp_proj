@@ -1,3 +1,6 @@
+## Description
+This web app allows people to keep track of how many customers are inside certain stores at a given time. By knowing this info before traveling to the store, people can avoid crowded stores and waiting in line. This is especially important in the age of COVID-19. Store employees can update a count, the number of customers currently in their store, and maintain a list of sold-out items. Users can view this info, in real-time, for any store within 20 miles. This web app could also be used for gyms, restaurants, etc.
+
 ## Structure of Repo
 Main code for the backend, which handles the requests and interacting with the MySQL database, is located in index.js
 
@@ -44,5 +47,3 @@ ALTER TABLE soldout ADD store_id INTEGER NOT NULL;
 
 #### Contributors
 Brandon Yan: Worked on the store dashboard and connecting that to the database. This is where store owners can update the count, and add to, or remove from, a list of their sold-out items. Also added the feature where customers can view sold-out items from the store search page.
-
-William Sun: Worked on the backend geolocation, adding lat and long to the SQL table, identifying where the stores' addresses were in latitude and longitude and grabbing stores within 30km based on lat and long values. Also added code to autofill a valid address in the signup page (although it currently does not work due to us not setting up a Google Cloud billing account).
