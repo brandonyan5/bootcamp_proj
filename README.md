@@ -1,6 +1,8 @@
 ## Structure of Repo
 Main code for the backend, which handles the requests and interacting with the MySQL database, is located in index.js
+
 Code for front end and user inferface is located in the views folder. This files interact with the index.js file
+
 Code for CSS is located in public/css folder
 
 ## Setup/Getting Started
