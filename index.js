@@ -16,7 +16,7 @@ const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'password',
-    database: 'bootcamp',
+    database: 'doordash',
     multipleStatements: true
 });
 
@@ -226,26 +226,27 @@ if (req.session.uid != null){
                     res.send('An error has occurred')
                     return
                 }
+                else if (result.length != 0) {
                 // If no error, get count of the store
                 const shops = {}
                 for (let i = 0; i < result.length; i++) {
                         shops[result[i].id] = {
                             item: result[i].item
-
                         }
                 }
                 const shops2 = {}
-                 shops2[result[1].id] = {
-                 count: result[1].count
-
+                 shops2[result[0].id] = {
+                 count: result[0].count
                  }
                 res.locals = {
                     data: shops,
                     data2: shops2
-
                 }
                 res.render('dashboard')
-
+                }
+                else {
+                    res.render('dashboard')
+                }
             }
         )
         connection.release();
@@ -260,7 +261,7 @@ app.post('/map', (req, res) => {
     const inp = req.body.search;
     const currLat = req.body.currLat;
     const currLong = req.body.currLong;
-    console.log(inp, currLat, currLong);
+    //console.log(inp, currLat, currLong);
     pool.getConnection(function (err, connection) {
         if (err) throw err;
         connection.query({
